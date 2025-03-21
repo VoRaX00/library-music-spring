@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:15
+    container_name: library_music_spring
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1324
+      POSTGRES_DB: test_jwt_db
+      PG_DATA: /var/lib/postgresql/data/
+    ports:
+      - 6666:5432
+    volumes:
+      - postgres_volume_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_volume_data:
