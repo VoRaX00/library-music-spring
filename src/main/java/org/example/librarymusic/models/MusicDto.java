@@ -6,11 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class Music {
-    private Long id;
+public class MusicDto {
     private String song;
     private String text;
     private String link;
-    private List<Group> groups;
+    private List<String> groups;
     private Date released;
 }
