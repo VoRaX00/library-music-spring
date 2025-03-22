@@ -3,9 +3,9 @@ package org.example.librarymusic.controllers;
 import lombok.AllArgsConstructor;
 import org.example.librarymusic.mappers.MusicMapper;
 import org.example.librarymusic.models.Music;
-import org.example.librarymusic.models.MusicDto;
+import org.example.librarymusic.models.MusicCreateDto;
+import org.example.librarymusic.models.MusicUpdateDto;
 import org.example.librarymusic.services.MusicService;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,19 +16,19 @@ public class MusicController {
     private final MusicService musicService;
 
     @PostMapping("/music")
-    public Music createMusic(@RequestBody MusicDto musicDto) {
-        var music = MusicMapper.INSTANCE.toModel(musicDto);
+    public Music createMusic(@RequestBody MusicCreateDto musicCreateDto) {
+        var music = MusicMapper.INSTANCE.toModel(musicCreateDto);
         System.out.println(music);
         return musicService.save(music);
     }
 
     @PutMapping("/music/{id}")
-    public Music updateMusic(@RequestBody MusicDto musicDto, @PathVariable String id) {
-        return null;
+    public void updateMusic(@RequestBody MusicUpdateDto updateDto, @PathVariable String id) {
+        return musicService.update(updateDto);
     }
 
     @PatchMapping("/music/{id}")
-    public Music patchMusic(@RequestBody MusicDto musicDto, @PathVariable Long id) {
+    public Music patchMusic(@RequestBody MusicCreateDto musicCreateDto, @PathVariable Long id) {
         return null;
     }
 
@@ -38,13 +38,13 @@ public class MusicController {
     }
 
     @GetMapping("/music")
-    public MusicDto getMusic(@RequestParam String song, @RequestParam String group) {
+    public MusicCreateDto getMusic(@RequestParam String song, @RequestParam String group) {
         return null;
     }
 
     @GetMapping("/music")
-    public List<MusicDto> getAllMusics(@RequestParam String song, @RequestParam String group,
-                                       @RequestParam String list, @RequestParam String released) {
+    public List<MusicCreateDto> getAllMusics(@RequestParam String song, @RequestParam String group,
+                                             @RequestParam String list, @RequestParam String released) {
         return null;
     }
 

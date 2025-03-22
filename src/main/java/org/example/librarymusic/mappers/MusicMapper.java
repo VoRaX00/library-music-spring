@@ -2,7 +2,7 @@ package org.example.librarymusic.mappers;
 
 import org.example.librarymusic.models.Group;
 import org.example.librarymusic.models.Music;
-import org.example.librarymusic.models.MusicDto;
+import org.example.librarymusic.models.MusicCreateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -16,7 +16,7 @@ public interface MusicMapper {
     MusicMapper INSTANCE = Mappers.getMapper(MusicMapper.class);
 
     @Mapping(source = "groups", target = "groups", qualifiedByName = "mapGroups")
-    Music toModel(MusicDto musicDto);
+    Music toModel(MusicCreateDto musicCreateDto);
 
     @Named("mapGroups")
     default List<Group> mapGroups(List<String> groupNames) {
@@ -31,3 +31,5 @@ public interface MusicMapper {
                 }).collect(Collectors.toList());
     }
 }
+
+
