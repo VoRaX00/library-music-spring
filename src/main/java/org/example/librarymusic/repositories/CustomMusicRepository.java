@@ -1,12 +1,15 @@
 package org.example.librarymusic.repositories;
 
 import org.example.librarymusic.models.Music;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public interface CustomMusicRepository {
-    Optional<List<Music>> getAll(Music music, Integer countSongs, Integer page);
-    Optional<Music> get(String song, String group);
-    Optional<String> getText(String song, String group);
+    Page<Music> getAll(String song, String group, String link, Date released, Pageable pageable);
+    Music get(String song, String group);
+    String getText(String song, String group);
 }

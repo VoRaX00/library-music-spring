@@ -36,6 +36,6 @@ public class Music {
             joinColumns = @JoinColumn(name = "music_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
-    private Collection<Group> groups;
+    private List<Group> groups;
 
 }
