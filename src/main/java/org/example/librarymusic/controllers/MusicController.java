@@ -1,20 +1,18 @@
 package org.example.librarymusic.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.example.librarymusic.models.*;
 import org.example.librarymusic.services.MusicService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@Tag(name = "music-controller")
 public class MusicController {
     private final MusicService musicService;
 
