@@ -4,11 +4,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.example.librarymusic.models.*;
 import org.example.librarymusic.services.MusicService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -42,7 +42,7 @@ public class MusicController {
     }
 
     @GetMapping("/musics/{page}")
-    public List<MusicGetDto> getAllMusics(
+    public Page<MusicGetDto> getAllMusics(
             @RequestParam(required = false) String song,
             @RequestParam(required = false) String group,
             @RequestParam(required = false) String link,
