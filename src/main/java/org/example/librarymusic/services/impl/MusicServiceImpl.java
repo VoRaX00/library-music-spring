@@ -2,6 +2,7 @@ package org.example.librarymusic.services.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.librarymusic.exceptions.ConflictException;
 import org.example.librarymusic.exceptions.NotFoundException;
 import org.example.librarymusic.mappers.MusicMapper;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MusicServiceImpl implements MusicService {
     private final MusicRepository musicRepository;
@@ -27,12 +29,16 @@ public class MusicServiceImpl implements MusicService {
     @Override
     @Transactional
     public MusicGetDto save(MusicCreateDto musicCreateDto) {
+        log.debug("check exists song");
         var songExists = musicRepository.existsBySongAndGroups_Name(musicCreateDto.getSong(),
-                musicCreateDto.getGroups().stream().map(GroupDto::getName).collect(Collectors.toList()));
+                musicCreateDto.getGroups().stream().map(GroupDto::getName).collect(Collectors.toList()));;
+
         if (songExists) {
             throw new ConflictException("Song already exists");
         }
+        log.info("not exists song");
 
+        log.debug("mapping music");
         var music = MusicMapper.INSTANCE.toModel(musicCreateDto);
         List<Group> savedGroups = new ArrayList<>();
         for(var group : music.getGroups()) {
@@ -43,24 +49,31 @@ public class MusicServiceImpl implements MusicService {
                 savedGroups.add(exists.get());
             }
         }
-
         music.setGroups(savedGroups);
+        log.debug("successful mapped groups");
+
+        log.info("saving in repository");
         var result = musicRepository.save(music);
+        log.info("successful saving in repository");
         return MusicMapper.INSTANCE.toMusicGetDto(result);
     }
 
     @Override
     @Transactional
     public void fullUpdate(Long id, MusicUpdateDto updateDto) {
+        log.info("search music by id");
         var found = musicRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Music not found"));
-
+        log.debug("found music by id");
         found.setSong(updateDto.getSong());
         found.setText(updateDto.getText());
         found.setLink(updateDto.getLink());
         found.setGroups(updateDto.getGroups());
         found.setReleased(updateDto.getReleased());
+
+        log.info("updating music");
         musicRepository.save(found);
+        log.info("successful update");
     }
 
     @Override
