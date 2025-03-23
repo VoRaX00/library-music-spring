@@ -2,6 +2,7 @@ package org.example.librarymusic.models;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -11,5 +12,5 @@ public class MusicCreateDto {
     private String text;
     private String link;
     private List<String> groups;
-    private Date released;
+    private LocalDate released;
 }

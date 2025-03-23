@@ -1,14 +1,17 @@
 package org.example.librarymusic.services.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.librarymusic.mappers.MusicMapper;
 import org.example.librarymusic.models.*;
+import org.example.librarymusic.repositories.GroupRepository;
 import org.example.librarymusic.repositories.MusicRepository;
 import org.example.librarymusic.services.MusicService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +20,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MusicServiceImpl implements MusicService {
     private final MusicRepository musicRepository;
+    private final GroupRepository groupRepository;
 
     @Override
+    @Transactional
     public MusicGetDto save(MusicCreateDto musicCreateDto) {
         var music = MusicMapper.INSTANCE.toModel(musicCreateDto);
+        List<Group> savedGroups = new ArrayList<>();
+        for(var group : music.getGroups()) {
+            var exists = groupRepository.findByName(group.getName());
+            if(exists.isEmpty()) {
+                savedGroups.add(groupRepository.save(group));
+            } else {
+                savedGroups.add(exists.get());
+            }
+        }
+
+        music.setGroups(savedGroups);
         var result = musicRepository.save(music);
         return MusicMapper.INSTANCE.toMusicGetDto(result);
     }

@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class MusicController {
             @RequestParam(required = false) String song,
             @RequestParam(required = false) String group,
             @RequestParam(required = false) String link,
-            @RequestParam(required = false) Date released,
+            @RequestParam(required = false) LocalDate released,
             @RequestParam(defaultValue = "4") Integer countSongs,
             @PathVariable Integer page) {
         var filters = MusicFiltersDto.builder()

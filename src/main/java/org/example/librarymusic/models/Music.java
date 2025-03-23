@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.context.annotation.Primary;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ public class Music {
     private String link;
 
     @Column(name = "released")
-    private Date released;
+    private LocalDate released;
 
     @ManyToMany
     @JoinTable(
