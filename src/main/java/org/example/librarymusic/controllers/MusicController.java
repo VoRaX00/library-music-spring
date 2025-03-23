@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@Tag(name = "music-controller")
+@Tag(name = "music_controller")
 public class MusicController {
     private final MusicService musicService;
 
