@@ -19,17 +19,30 @@ public interface MusicMapper {
 
     MusicGetDto toMusicGetDto(Music music);
 
+    @Mapping(source = "groups", target = "groups", qualifiedByName = "mapGroupsDto")
+    MusicGetTextDto toMusicGetTextDto(Music music);
+
     @Named("mapGroups")
-    default List<Group> mapGroups(List<String> groupNames) {
+    default List<Group> mapGroups(List<GroupDto> groupNames) {
         if (groupNames == null || groupNames.isEmpty()) {
             return List.of();
         }
         return groupNames.stream()
-                .map(name -> {
+                .map(groupDto -> {
                     Group group = new Group();
-                    group.setName(name);
+                    group.setName(groupDto.getName());
                     return group;
                 }).collect(Collectors.toList());
+    }
+
+    @Named("mapGroupsDto")
+    default List<GroupDto> mapGroupsDto(List<Group> groups) {
+        if (groups == null || groups.isEmpty()) {
+            return List.of();
+        }
+        return groups.stream()
+                .map(group -> GroupDto.builder().name(group.getName()).build())
+                .collect(Collectors.toList());
     }
 }
 

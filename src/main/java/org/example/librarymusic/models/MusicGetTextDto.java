@@ -9,6 +9,6 @@ import java.util.List;
 @Builder
 public class MusicGetTextDto {
     private String song;
-    private List<Group> groups;
+    private List<GroupDto> groups;
     private String text;
 }

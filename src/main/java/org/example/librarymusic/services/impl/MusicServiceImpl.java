@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +27,8 @@ public class MusicServiceImpl implements MusicService {
     @Override
     @Transactional
     public MusicGetDto save(MusicCreateDto musicCreateDto) {
-        var songExists = musicRepository.existsBySongAndGroups_Name(musicCreateDto.getSong(), musicCreateDto.getGroups());
+        var songExists = musicRepository.existsBySongAndGroups_Name(musicCreateDto.getSong(),
+                musicCreateDto.getGroups().stream().map(GroupDto::getName).collect(Collectors.toList()));
         if (songExists) {
             throw new ConflictException("Song already exists");
         }
@@ -48,6 +50,7 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
+    @Transactional
     public void fullUpdate(Long id, MusicUpdateDto updateDto) {
         var found = musicRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Music not found"));
@@ -61,6 +64,7 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
+    @Transactional
     public void partialUpdate(Long id, MusicUpdateDto updateDto) {
         var found = musicRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Music not found"));
@@ -84,6 +88,7 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         musicRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException("Music not found"));
@@ -114,10 +119,7 @@ public class MusicServiceImpl implements MusicService {
         var end = start + countVerse;
         var verseList = Arrays.asList(verses).subList(start, Math.min(end, verses.length));
 
-        return MusicGetTextDto.builder()
-                .song(music.getSong())
-                .text(String.join("\n\n", verseList))
-                .groups(music.getGroups())
-                .build();
+        music.setText(String.join("\n\n", verseList));
+        return MusicMapper.INSTANCE.toMusicGetTextDto(music);
     }
 }

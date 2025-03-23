@@ -17,6 +17,8 @@ public class MusicExceptionHandler {
         return new ResponseError(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseError handle(Exception e) {
         log.error(e.getMessage(), e);
         return new ResponseError(HttpStatus.CONFLICT, e.getMessage());
