@@ -1,18 +1,16 @@
 package org.example.librarymusic.services;
 
-import org.example.librarymusic.models.Music;
-import org.example.librarymusic.models.MusicCreateDto;
-import org.example.librarymusic.models.MusicUpdateDto;
-
+import org.example.librarymusic.models.*;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 
 public interface MusicService {
-    Music save(MusicCreateDto music);
-    void update(MusicUpdateDto music);
-    void updatePartial(Map<String, Object> params);
+    MusicGetDto save(MusicCreateDto music);
+    void fullUpdate(Long id, MusicUpdateDto updateDto);
+    void partialUpdate(Long id, MusicUpdateDto updateDto);
     void delete(Long id);
-    List<Music> getAll(Music music, Integer countSongs, Integer page);
-    Music get(String song, String group);
-    String getText(String song, String group);
+    List<MusicGetDto> getAll(MusicFiltersDto filtersDto, Pageable pageable);
+    MusicGetDto get(String song, String group);
+    MusicGetTextDto getText(String song, String group, Integer countVerse, Integer page);
 }

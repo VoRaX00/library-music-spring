@@ -1,13 +1,14 @@
 package org.example.librarymusic.controllers;
 
 import lombok.AllArgsConstructor;
-import org.example.librarymusic.mappers.MusicMapper;
-import org.example.librarymusic.models.Music;
-import org.example.librarymusic.models.MusicCreateDto;
-import org.example.librarymusic.models.MusicUpdateDto;
+import lombok.Data;
+import org.example.librarymusic.models.*;
 import org.example.librarymusic.services.MusicService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -15,41 +16,54 @@ import java.util.List;
 public class MusicController {
     private final MusicService musicService;
 
-    @PostMapping("/music")
-    public Music createMusic(@RequestBody MusicCreateDto musicCreateDto) {
-        var music = MusicMapper.INSTANCE.toModel(musicCreateDto);
-        System.out.println(music);
-        return musicService.save(music);
+    @PostMapping("/musics")
+    public MusicGetDto createMusic(@RequestBody MusicCreateDto musicCreateDto) {
+        return musicService.save(musicCreateDto);
     }
 
-    @PutMapping("/music/{id}")
-    public void updateMusic(@RequestBody MusicUpdateDto updateDto, @PathVariable String id) {
-        return musicService.update(updateDto);
+    @PutMapping("/musics/{id}")
+    public void updateMusic(@RequestBody MusicUpdateDto updateDto, @PathVariable Long id) {
+         musicService.fullUpdate(id, updateDto);
     }
 
-    @PatchMapping("/music/{id}")
-    public Music patchMusic(@RequestBody MusicCreateDto musicCreateDto, @PathVariable Long id) {
-        return null;
+    @PatchMapping("/musics/{id}")
+    public void patchMusic(@RequestBody MusicUpdateDto musicUpdateDto, @PathVariable Long id) {
+        musicService.partialUpdate(id, musicUpdateDto);
     }
 
-    @DeleteMapping("/music/{id}")
+    @DeleteMapping("/musics/{id}")
     public void deleteMusic(@PathVariable Long id) {
         musicService.delete(id);
     }
 
-    @GetMapping("/music")
-    public MusicCreateDto getMusic(@RequestParam String song, @RequestParam String group) {
-        return null;
+    @GetMapping("/musics/song")
+    public MusicGetDto getMusic(@RequestParam String song, @RequestParam String group) {
+        return musicService.get(song, group);
     }
 
-    @GetMapping("/music")
-    public List<MusicCreateDto> getAllMusics(@RequestParam String song, @RequestParam String group,
-                                             @RequestParam String list, @RequestParam String released) {
-        return null;
+    @GetMapping("/musics/{page}")
+    public List<MusicGetDto> getAllMusics(
+            @RequestParam(required = false) String song,
+            @RequestParam(required = false) String group,
+            @RequestParam(required = false) String link,
+            @RequestParam(required = false) Date released,
+            @RequestParam(defaultValue = "4") Integer countSongs,
+            @PathVariable Integer page) {
+        var filters = MusicFiltersDto.builder()
+                .song(song)
+                .group(group)
+                .link(link)
+                .released(released)
+                .build();
+
+        return musicService.getAll(filters, PageRequest.of(page, countSongs));
     }
 
-    @GetMapping("/music/{id}/text")
-    public String getMusicText(@PathVariable Long id) {
-        return null;
+    @GetMapping("/musics/text/{page}")
+    public MusicGetTextDto getMusicText(@PathVariable Integer page,
+                               @RequestParam String song,
+                               @RequestParam String group,
+                               @RequestParam Integer countVerse) {
+        return musicService.getText(song, group, countVerse, page);
     }
 }
