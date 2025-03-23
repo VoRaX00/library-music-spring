@@ -68,7 +68,7 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     public List<MusicGetDto> getAll(MusicFiltersDto filtersDto, Pageable pageable) {
-        Page<Music> musics = musicRepository.getAll(filtersDto.getSong(), filtersDto.getGroup(),
+        Page<Music> musics = musicRepository.searchAll(filtersDto.getSong(), filtersDto.getGroup(),
                 filtersDto.getLink(), filtersDto.getReleased(), pageable);
 
         return musics.getContent().stream()
@@ -78,13 +78,15 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     public MusicGetDto get(String song, String group) {
-        var music = musicRepository.get(song, group);
+        var music = musicRepository.findBySongAndGroups_Name(song, group)
+                .orElseThrow(() -> new RuntimeException("Music not found"));
         return MusicMapper.INSTANCE.toMusicGetDto(music);
     }
 
     @Override
     public MusicGetTextDto getText(String song, String group, Integer countVerse, Integer page) {
-        var music = musicRepository.get(song, group);
+        var music = musicRepository.findBySongAndGroups_Name(song, group)
+                .orElseThrow(() -> new RuntimeException("Music not found"));
         var verses = music.getText().split("\n\n");
 
         var start = countVerse * (page - 1);
