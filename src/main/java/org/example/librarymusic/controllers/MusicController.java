@@ -7,6 +7,8 @@ import org.example.librarymusic.models.*;
 import org.example.librarymusic.services.MusicService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -15,39 +17,40 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Slf4j
 @Tag(name = "music_controller")
+@RequestMapping("/musics")
 public class MusicController {
     private final MusicService musicService;
 
-    @PostMapping("/musics")
-    public MusicGetDto createMusic(@RequestBody MusicCreateDto musicCreateDto) {
+    @PostMapping
+    public ResponseEntity<MusicGetDto> createMusic(@RequestBody MusicCreateDto musicCreateDto) {
         log.debug("creating music {}", musicCreateDto);
         var music = musicService.save(musicCreateDto);
         log.debug("successfully created music {}", music);
-        return music;
+        return new ResponseEntity<>(music, HttpStatus.CREATED);
     }
 
-    @PutMapping("/musics/{id}")
+    @PutMapping("/{id}")
     public void updateMusic(@RequestBody MusicUpdateDto updateDto, @PathVariable Long id) {
         log.debug("updating music {}", updateDto);
         musicService.fullUpdate(id, updateDto);
         log.debug("successfully updated music {}", updateDto);
     }
 
-    @PatchMapping("/musics/{id}")
+    @PatchMapping("/{id}")
     public void patchMusic(@RequestBody MusicUpdateDto musicUpdateDto, @PathVariable Long id) {
         log.debug("partial updating music {}", musicUpdateDto);
         musicService.partialUpdate(id, musicUpdateDto);
         log.debug("successfully partial updated music {}", musicUpdateDto);
     }
 
-    @DeleteMapping("/musics/{id}")
+    @DeleteMapping("/{id}")
     public void deleteMusic(@PathVariable Long id) {
         log.debug("deleting music {}", id);
         musicService.delete(id);
         log.debug("successfully deleted music {}", id);
     }
 
-    @GetMapping("/musics/song")
+    @GetMapping("/song")
     public MusicGetDto getMusic(@RequestParam String song, @RequestParam String group) {
         log.debug("getting music where song = {} and group = {}", song, group);
         var music =  musicService.get(song, group);
@@ -55,7 +58,7 @@ public class MusicController {
         return music;
     }
 
-    @GetMapping("/musics/{page}")
+    @GetMapping("/{page}")
     public Page<MusicGetDto> getAllMusics(
             @RequestParam(required = false) String song,
             @RequestParam(required = false) String group,
@@ -78,7 +81,7 @@ public class MusicController {
         return musics;
     }
 
-    @GetMapping("/musics/text/{page}")
+    @GetMapping("/text/{page}")
     public MusicGetTextDto getMusicText(@PathVariable Integer page,
                                @RequestParam String song,
                                @RequestParam String group,
